@@ -1,0 +1,819 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"coll",
+				"collisionCallbacks"
+			],
+			[
+				"shurike",
+				"shurikenVelocity"
+			],
+			[
+				"shuri",
+				"shurikenVelocity"
+			],
+			[
+				"gotoShop",
+				"gotoShopButtons"
+			],
+			[
+				"getElement",
+				"getElementsByClassName"
+			],
+			[
+				"gamesta",
+				"gamestateTable"
+			],
+			[
+				"message",
+				"messageObject"
+			],
+			[
+				"namingYourCa",
+				"namingYourCarElement"
+			],
+			[
+				"collision",
+				"collisionGroupID"
+			],
+			[
+				"playerY",
+				"playerYVelocity"
+			],
+			[
+				"player",
+				"playerYVelocity"
+			],
+			[
+				"forward",
+				"playerForwardVelocity"
+			],
+			[
+				"gameobject",
+				"gameObjects"
+			],
+			[
+				"fill",
+				"fillStyle"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"check",
+				"checkCollision"
+			],
+			[
+				"for",
+				"for	for (…) {…}"
+			],
+			[
+				"connect",
+				"connectedPlayers"
+			],
+			[
+				"explo",
+				"explosionImage"
+			],
+			[
+				"req",
+				"requestObject"
+			],
+			[
+				"goBack",
+				"goBackOneScreen"
+			],
+			[
+				"backgro",
+				"backgroundPosition"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "engine.js",
+			"settings":
+			{
+				"buffer_size": 13746,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "game.js",
+			"settings":
+			{
+				"buffer_size": 7079,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "groups:\n  default:\n    options:\n      default: true\n      prefix: '&8[&7Default&8]&7'\n    permissions:\n    - coloredtablist.red\n    - modifyworld.*\n  Owner:\n    options:\n      prefix: '&8[&4Owner&8]&4'\n    worlds:\n      aqua:\n        permissions:\n        - coloredtablist.dark\n    permissions: []\n  Admin:\n    options:\n      prefix: '&8[&5Admin&8]&5'\n  SrMod:\n    options:\n      prefix: '&8[&bSrMod&8]&b'\n  Helper:\n    options:\n      prefix: '&8[&dHelper&8]&d'\n  Mod:\n    options:\n      prefix: '&8[&6Moderator&8]'\n  moderator:\n    options:\n      prefix: '&8[&5Moderator&8]&5'\nschema-version: 1\nusers:\n  7d1c0413-5042-4cc6-b8cf-f35b42df64a9:\n    permissions:\n    - '*'\n    group: []\n    options:\n      name: BaBy_MOoN22\n  927651bd-9f7f-4b12-8524-9cf7afdd6cd4:\n    group:\n    - SrMod\n    options:\n      name: ChubsThePandaOG\n  ebe07b6a-b749-49fd-a130-00c45860512e:\n    options:\n      name: '150'\n    permissions:\n    - '*'\n    group: []\n  a0b4b67d-de86-435b-bb49-d5d4b3b8cc8f:\n    permissions:\n    - coloredtablist.red\n    options:\n      name: backwash\n",
+			"file": "/Users/kylefujii/Downloads/permissions.yml",
+			"file_size": 1054,
+			"file_write_time": 131441824950000000,
+			"settings":
+			{
+				"buffer_size": 1052,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/kylefujii/code/ninjatime"
+	],
+	"file_history":
+	[
+		"/Users/kylefujii/code/node-js-getting-started/gamestateTable",
+		"/Users/kylefujii/code/node-js-getting-started/kyleracer.sublime-project",
+		"/Users/kylefujii/code/node-js-getting-started/items",
+		"/Users/kylefujii/code/node-js-getting-started/users",
+		"/Users/kylefujii/code/node-js-getting-started/public/stylesheets/main.css",
+		"/Users/kylefujii/code/superkyleracer/engine.js",
+		"/Users/kylefujii/code/node-js-getting-started/public/javascript/superkyleengine.js",
+		"/Users/kylefujii/code/node-js-getting-started/public/javascript/superkyleracer.js",
+		"/Users/kylefujii/code/node-js-getting-started/server.js",
+		"/Users/kylefujii/code/node-js-getting-started/cars",
+		"/Users/kylefujii/code/node-js-getting-started/views/pages/index.ejs",
+		"/Users/kylefujii/code/node-js-getting-started/wireframe/engine.js",
+		"/Users/kylefujii/code/node-js-getting-started/wireframe/game.js",
+		"/Users/kylefujii/code/node-js-getting-started/views/partials/header.ejs",
+		"/Users/kylefujii/code/node-js-getting-started/untitled",
+		"/Users/kylefujii/code/node-js-getting-started/buglist",
+		"/Users/kylefujii/code/node-js-getting-started/package.json",
+		"/Users/kylefujii/Desktop/MinecraftClient1.9.0/MinecraftClient.ini",
+		"/Users/kylefujii/Library/Application Support/minecraft/schematics/Tunneler8chunks.schematic.c",
+		"/Users/kylefujii/code/node-js-getting-started/views/pages/buglist",
+		"/Users/kylefujii/code/node-js-getting-started/nodekylecars.sublime-project",
+		"/Users/kylefujii/code/node-js-getting-started/node_modules/body-parser/lib/types/json.js",
+		"/Users/kylefujii/code/node-js-getting-started/node_modules/ejs/test/fixtures/backslash.html",
+		"/Users/kylefujii/code/node-js-getting-started/node_modules/ejs/test/fixtures/space-and-tab-slurp.ejs",
+		"/Users/kylefujii/code/node-js-getting-started/node_modules/ejs/test/fixtures/style.css",
+		"/Users/kylefujii/code/node-js-getting-started/node_modules/body-parser/index.js",
+		"/Users/kylefujii/code/node-js-getting-started/public/javascript/engine.js",
+		"/Users/kylefujii/Desktop/The Beaver Bundle/sounds.json",
+		"/Users/kylefujii/Downloads/config.yml",
+		"/private/var/folders/9r/j2cg449s0772w0qnyb8w0vrm0000gn/T/fz3temp-1/permissions.yml",
+		"/private/var/folders/9r/j2cg449s0772w0qnyb8w0vrm0000gn/T/fz3temp-1/server.properties",
+		"/private/var/folders/9r/j2cg449s0772w0qnyb8w0vrm0000gn/T/fz3temp-1/config.yml",
+		"/Users/kylefujii/Desktop/EVERYTHING IN DESKTOP IS IN THIS FOLDER/superkyleracer/node_modules/save/node_modules/mingo/mingo.js",
+		"/usr/local/include/node/openssl/ts.h",
+		"/Users/kylefujii/Desktop/EVERYTHING IN DESKTOP IS IN THIS FOLDER/superkyleracer/node_modules/save/test/update.js",
+		"/Users/kylefujii/Desktop/EVERYTHING IN DESKTOP IS IN THIS FOLDER/superkyleracer/package.json",
+		"/Users/kylefujii/Desktop/Website for Server/forum.html",
+		"/Users/kylefujii/Desktop/Website for Server/minecraftwebsite.sublime-project"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			".isCollider",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"grounded =",
+			"grounded",
+			"grounded = ",
+			"hittingstatic = ",
+			"healthbar",
+			"collision",
+			"position.y",
+			"y = ",
+			"y += ",
+			"shuriken",
+			"me.speed",
+			"spike",
+			"static",
+			"gravity",
+			"keydown",
+			"translate",
+			"transl",
+			"parent",
+			"relative",
+			" '",
+			"relative",
+			"active",
+			"static",
+			"Charact",
+			"ch",
+			"Character",
+			"character",
+			"new game",
+			"new cha",
+			"changeh",
+			"callbacks",
+			"shuri",
+			"drawcente",
+			"updatehook",
+			"rotation",
+			"veloci",
+			".img",
+			"img =",
+			"key",
+			"lives--",
+			"relati",
+			"fixedpositio",
+			"keydown",
+			"keydowncall",
+			"frictio",
+			"grounded",
+			"static",
+			"grounded",
+			"'?'",
+			"colliders.push",
+			"callba",
+			".velocity =",
+			".velocit",
+			".velocity =",
+			"console.log(",
+			"console.log",
+			"console.log(",
+			"veloci",
+			".velocit",
+			"player1.car.velo",
+			"play",
+			"loginsuccess",
+			"modifiers",
+			"doc",
+			"players",
+			"insertone(",
+			"writetab",
+			"querytab",
+			"players",
+			"writetable",
+			"querytable",
+			"send",
+			"customize",
+			"buyButton",
+			"shopDiv",
+			"yourgarage",
+			"login",
+			"playerinvent",
+			"playerid",
+			"inventory",
+			"///",
+			" - ",
+			"shop",
+			"shop ",
+			".style.displ",
+			"screen",
+			"customize",
+			".car =",
+			"player1.car =",
+			"player1.car",
+			"carSquare.",
+			"carSquare",
+			"local",
+			"-",
+			"returnObject",
+			"accel",
+			"garage",
+			"carSelectionButton",
+			"drawimage",
+			"image",
+			"draw",
+			"new ca",
+			"acceleration",
+			"local",
+			"new car",
+			"message",
+			"wsc.sed",
+			"'id'",
+			"readtable('car",
+			"new car",
+			"garageScreen",
+			"auth",
+			"shop",
+			"garageButton",
+			"cars",
+			"console.lo",
+			"dataObject",
+			".username",
+			"readtable(",
+			"username",
+			"user not",
+			".id",
+			".playerIndex",
+			"playerIndex",
+			"connectedpla",
+			"rookie",
+			"new player",
+			"readtab"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"car",
+			".isCollider",
+			"gameObject.position.y",
+			"gameObject.position.x",
+			"animationFrameTimer",
+			"targetVelocity",
+			"playerVelocity.y",
+			"playerVelocity.x",
+			"localCar",
+			"player1.car.invincible",
+			"GameObject",
+			"gameObject",
+			"playerForwardVelocity",
+			"playerXDirection",
+			"playerElement"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "engine.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13746,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								13031,
+								13031
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 8506.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7079,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6604,
+								6661
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3871.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/kylefujii/Downloads/permissions.yml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1052,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								513,
+								513
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 409.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "game.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7079,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3350,
+								3350
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1499.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 0,
+					"file": "engine.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13746,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3161,
+								3161
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2111.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			],
+			[
+				0,
+				1,
+				1,
+				2
+			],
+			[
+				1,
+				1,
+				2,
+				2
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.491114835004,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			0.316736481522,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "ninjatime.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"eng",
+				"engine.js"
+			],
+			[
+				"js",
+				"game.js"
+			],
+			[
+				"index.ej",
+				"node-js-getting-started/views/pages/index.ejs"
+			],
+			[
+				"engin",
+				"node-js-getting-started/wireframe/engine.js"
+			],
+			[
+				"game.js",
+				"node-js-getting-started/wireframe/game.js"
+			],
+			[
+				"",
+				"node-js-getting-started/views/pages/index.ejs"
+			],
+			[
+				"racer",
+				"node-js-getting-started/public/javascript/superkyleracer.js"
+			],
+			[
+				"en",
+				"node-js-getting-started/wireframe/engine.js"
+			],
+			[
+				"game.j",
+				"node-js-getting-started/wireframe/game.js"
+			],
+			[
+				"sere",
+				"server.js"
+			],
+			[
+				"ser",
+				"server.js"
+			],
+			[
+				"serv",
+				"server.js"
+			],
+			[
+				"rac",
+				"public/javascript/superkyleracer.js"
+			],
+			[
+				"serve",
+				"server.js"
+			],
+			[
+				"race",
+				"public/javascript/superkyleracer.js"
+			],
+			[
+				"user",
+				"users"
+			],
+			[
+				"car",
+				"cars"
+			],
+			[
+				"cars",
+				"cars"
+			],
+			[
+				"racre",
+				"kyleracer.sublime-project"
+			],
+			[
+				"users",
+				"users"
+			],
+			[
+				"css",
+				"public/stylesheets/main.css"
+			],
+			[
+				"index.ejs",
+				"views/pages/index.ejs"
+			],
+			[
+				"node",
+				"nodekylecars.sublime-project"
+			],
+			[
+				"server",
+				"server.js"
+			],
+			[
+				"gamesta",
+				"gamestateTable"
+			],
+			[
+				"html",
+				"node_modules/ejs/test/fixtures/backslash.html"
+			],
+			[
+				"games",
+				"gamestateTable"
+			],
+			[
+				"tab",
+				"node_modules/ejs/test/fixtures/space-and-tab-slurp.ejs"
+			],
+			[
+				"index",
+				"views/pages/index.ejs"
+			],
+			[
+				"engine",
+				"public/javascript/superkyleengine.js"
+			],
+			[
+				"header.e",
+				"views/partials/header.ejs"
+			],
+			[
+				"header",
+				"views/partials/header.ejs"
+			],
+			[
+				"main.",
+				"public/stylesheets/main.css"
+			],
+			[
+				"main",
+				"public/stylesheets/main.css"
+			],
+			[
+				"main.css",
+				"public/stylesheets/main.css"
+			],
+			[
+				"styl",
+				"node_modules/ejs/test/fixtures/style.css"
+			],
+			[
+				"engi",
+				"public/javascript/engine.js"
+			],
+			[
+				"header.ej",
+				"views/partials/header.ejs"
+			],
+			[
+				"head",
+				"views/partials/header.ejs"
+			],
+			[
+				"us",
+				"users"
+			],
+			[
+				".ejs",
+				"views/pages/index.ejs"
+			],
+			[
+				"upda",
+				"node_modules/save/test/update.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Desktop/portfolio/portfolio.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 2,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 223.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
