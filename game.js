@@ -2,6 +2,10 @@ var playerSpeed = 50;
 var maxSpeed = 200;
 var lives = 3;
 var facing = 0;
+var grappling = false;
+
+var currentMouseX = 0;
+var currentMouseY = 0;
 
 var shurikens = [];
 
@@ -9,16 +13,26 @@ window.addEventListener('load', function() {
 	initialize();
 });
 
-
+var grapplingHook;
 var player;
 function initialize() {
 	player = new DamageableObject(0, 0, 'ninja', 50, 50);
 	player.img.src = 'images/ninja0.png';
 
+	grapplingHook = new GameObject(player.position.x, player.position.y, 20, 20);
+	grapplingHook.img.src = 'images/grapplingHook.png';
+	grapplingHook.collisionCallbacks.push(function(gameObject, side) {
+		if(gameObject.static) {
+			grapplingHook.kinematic = true;
+			grapplingHook.velocity = new Vector2D(0, 0);
+			grappling = true;
+		}
+	});
+
 	var boulder = new DamageableObject(450, 0, 'boulder', 250, 25);
 	// var boulder = new DamageableObject(499, 0, 25, 25, 'boulder');
 
-	var wolf = new Enemy(500, -200, 'wolf');
+	// var wolf = new Enemy(500, -200, 'wolf');
 
 	var spike = new Entity(300, 0, 25, 50);
 	spike.tags.push('spike');
@@ -33,6 +47,11 @@ function initialize() {
 			gameObject.grounded = null;
 			gameObject.velocity = gameObject.velocity.add(differenceVector);
 		}
+	});
+
+	window.addEventListener('mousemove', function(event) {
+		currentMouseX = event.clientX + player.position.x - (screenWidth / 2);
+		currentMouseY = -event.clientY + player.position.y + (screenHeight / 2);
 	});
 
 	keyHoldCallbacks['A'].push(function() {
@@ -59,7 +78,22 @@ function initialize() {
 	});
 
 	keyDownCallbacks['Q'].push(function() {
-		
+		var mousePosition = new Vector2D(currentMouseX, currentMouseY);
+		console.log(mousePosition);
+		var differenceVector = mousePosition.subtract(grapplingHook.position);
+		differenceVector = differenceVector.normalize();
+		differenceVector = differenceVector.scale(300);
+		grapplingHook.velocity = differenceVector;
+
+	});
+
+	keyHoldCallbacks['E'].push(function() {
+		if(grappling) {
+			var differenceVector = grapplingHook.position.subtract(player.position);
+			differenceVector = differenceVector.normalize();
+			differenceVector = differenceVector.scale(300);
+			player.velocity = differenceVector;
+		}
 	});
 
 	keyDownCallbacks['SPACEBAR'].push(function() {
@@ -152,8 +186,6 @@ function gameUpdate() {
 	ctx.font = '30px Arial';
 	ctx.fillStyle = 'red';
 	ctx.fillText('lives: ' + lives, 10, 30);
-
-	console.log(screenWidth);
 
 	worldOffset = player.position.add(new Vector2D(-screenWidth / 2, screenHeight / 2));
 
@@ -274,7 +306,7 @@ function DamageableObject(x, y, type, w, h) {
 	me.healthbar.fillColor = 'green';
 	me.healthbar.positioning = 'relative';
 	me.healthbar.parent = me;
-	me.healthbar.static = true;
+	// me.healthbar.static = true;
 
 	me.setHealth = function(value) {
 		me.health = value;

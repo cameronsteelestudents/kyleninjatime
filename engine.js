@@ -432,6 +432,7 @@ var keyCodes = {
 	// 's': 83,
 	65: 'A',
 	68: 'D',
+	69: 'E',
 	32: 'SPACEBAR',
 	81: 'Q',
 	80: 'P'
@@ -499,7 +500,7 @@ function requestUpdate() {
 
 	}
 
-	setTimeout(requestUpdate, 10);
+	setTimeout(requestUpdate, 0); /// optimize
 }
 
 var lastUpdateMS = 0;
