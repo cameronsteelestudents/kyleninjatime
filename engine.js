@@ -300,9 +300,9 @@ function Vector2D(x, y) {
 
 	}
 
-	me.scale = function(integer) {
-		return new Vector2D(me.x * integer, me.y * integer);
-	}
+	// me.scale = function(integer) {
+	// 	return new Vector2D(me.x * integer, me.y * integer);
+	// }
 
 	me.magnitude = function() {
 		return Math.sqrt(me.x * me.x + me.y * me.y);

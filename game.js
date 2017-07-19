@@ -1,8 +1,13 @@
+// PARALLAX
+
 var playerSpeed = 50;
 var maxSpeed = 200;
 var lives = 3;
+var coins = 0;
 var facing = 0;
-var grappling = false;
+
+var grapplingReady = true;
+var grapplingHooked = false;
 
 var currentMouseX = 0;
 var currentMouseY = 0;
@@ -21,33 +26,29 @@ function initialize() {
 
 	grapplingHook = new GameObject(player.position.x, player.position.y, 20, 20);
 	grapplingHook.img.src = 'images/grapplingHook.png';
+	grapplingHook.active = false;
 	grapplingHook.collisionCallbacks.push(function(gameObject, side) {
 		if(gameObject.static) {
-			grapplingHook.kinematic = true;
+			// grapplingHook.kinematic = true;
 			grapplingHook.velocity = new Vector2D(0, 0);
-			grappling = true;
+			grapplingHooked = true;
+		}
+
+		if(gameObject == player) {
+			if(grapplingHooked) {
+				grapplingHook.active = false;
+				grapplingReady = true;
+				grapplingHooked = false;
+			}
 		}
 	});
 
 	var boulder = new DamageableObject(450, 0, 'boulder', 250, 25);
 	// var boulder = new DamageableObject(499, 0, 25, 25, 'boulder');
 
-	// var wolf = new Enemy(500, -200, 'wolf');
+	var wolf = new Enemy(500, -200, 'wolf');
 
-	var spike = new Entity(300, 0, 25, 50);
-	spike.tags.push('spike');
-	spike.img.src = 'images/spike.png';
-	spike.collisionCallbacks.push(function(gameObject, side) {
-		if(gameObject.tags.indexOf('damageable') != -1) {
-			gameObject.changeHealth(-1);
-			var differenceVector = gameObject.position.subtract(spike.position);
-			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(200);
-			differenceVector.y += 10;
-			gameObject.grounded = null;
-			gameObject.velocity = gameObject.velocity.add(differenceVector);
-		}
-	});
+	var spike = new Obstacle(300, 0, 'spike');
 
 	window.addEventListener('mousemove', function(event) {
 		currentMouseX = event.clientX + player.position.x - (screenWidth / 2);
@@ -78,21 +79,26 @@ function initialize() {
 	});
 
 	keyDownCallbacks['Q'].push(function() {
-		var mousePosition = new Vector2D(currentMouseX, currentMouseY);
-		console.log(mousePosition);
-		var differenceVector = mousePosition.subtract(grapplingHook.position);
-		differenceVector = differenceVector.normalize();
-		differenceVector = differenceVector.scale(300);
-		grapplingHook.velocity = differenceVector;
+		if(grapplingReady) {
+			grapplingHook.position = new Vector2D(player.position.x, player.position.y);
+			grapplingHook.active = true;
+			var mousePosition = new Vector2D(currentMouseX, currentMouseY);
+			var differenceVector = mousePosition.subtract(grapplingHook.position);
+			differenceVector = differenceVector.normalize();
+			differenceVector = differenceVector.scale(300);
+			grapplingHook.velocity = differenceVector;
+			grapplingReady = false;
+		}
 
 	});
 
 	keyHoldCallbacks['E'].push(function() {
-		if(grappling) {
+		if(grapplingHooked) {
 			var differenceVector = grapplingHook.position.subtract(player.position);
 			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(300);
-			player.velocity = differenceVector;
+			differenceVector = differenceVector.scale(10);
+			player.velocity = player.velocity.add(differenceVector);
+			// player.velocity = differenceVector;
 		}
 	});
 
@@ -100,11 +106,14 @@ function initialize() {
 		var shuriken = new GameObject(player.position.x, player.position.y,  25, 25);
 		shuriken.img.src = 'images/shuriken.png';
 		// shuriken.
+
+		var mousePosition = new Vector2D(currentMouseX, currentMouseY);
+		var differenceVector = mousePosition.subtract(player.position);
+		differenceVector = differenceVector.normalize();
+		differenceVector = differenceVector.scale(300);
 		shuriken.velocity = shuriken.velocity.add(player.velocity);
-		var shurikenVelocity = new Vector2D(facing, 0);
-		shurikenVelocity = shurikenVelocity.scale(200);
-		shurikenVelocity.y += 50;
-		shuriken.velocity = shuriken.velocity.add(shurikenVelocity);
+		shuriken.velocity = shuriken.velocity.add(differenceVector);
+		shuriken.friction = 1;
 		shuriken.tags.push('shuriken');
 		shuriken.tags.push('active');
 
@@ -165,9 +174,15 @@ function generateLevel(levelSize, difficulty, type) {
 
 	while(mappedLength < levelSize) {
 		var randomWidth = Math.floor(Math.random() * 500);
-		var newY = lastY + Math.random() * maxYDiff;
+		var newY = lastY + ((Math.random() * maxYDiff) - (maxYDiff/2));
 		var ground = new GameObject(mappedLength, newY, randomWidth, 25);
 		lastY = newY;
+
+		if(Math.random() > 0.5) {
+			new Obstacle(levelSize * Math.random(), 500, 'spike');
+		} else {
+			new Enemy(levelSize * Math.random(), 500, 'wolf');
+		}
 
 		mappedLength += randomWidth;
 		// var ground = new GameObject(mappedLength, -300 - (Math.random() * 100), randomWidth, 25);
@@ -175,11 +190,11 @@ function generateLevel(levelSize, difficulty, type) {
 		ground.static = true;
 	}
 
-	// var objectCount = 20;
-	// while(objectCount > 0) {
+	var objectCount = 20;
+	while(objectCount > 0) {
 
-	// 	objectCount--;
-	// }
+		objectCount--;
+	}
 }
 
 function gameUpdate() {
@@ -216,6 +231,8 @@ function Enemy(x, y, type) {
 
 	me.speed = 200;
 
+	var visionRadius = 300;
+
 	me.tags.push('enemy');
 
 	var xDirection = 0;
@@ -223,29 +240,37 @@ function Enemy(x, y, type) {
 	me.think = function() {
 		if(type == 'wolf') {
 			if(me.grounded) {
-				if(player.position.x < me.position.x) {
-					xDirection = -1;
-				} else if(player.position.x > me.position.x) {
-					xDirection = 1;
-				} else {
-					xDirection = 0;
-				}
+				var differenceVector = me.position.subtract(player.position);
+				var distance = differenceVector.magnitude();
 
-				me.velocity.x = xDirection * me.speed;
+				// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
+				if(distance < visionRadius) {
+					if(player.position.x < me.position.x) {
+						xDirection = -1;
+					} else if(player.position.x > me.position.x) {
+						xDirection = 1;
+					} else {
+						xDirection = 0;
+					}
 
-				for (var gameObjectIndex = 0; gameObjectIndex < gameObjects.length; gameObjectIndex++) {
-					/// point of optimization
-					var gameObject = gameObjects[gameObjectIndex];
-					if(gameObject.tags.indexOf('spike') != -1) {
-						var differenceVector = gameObject.position.subtract(me.position);
-						if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
-							// jump over
-							if(differenceVector.magnitude() < 100) {
-								me.velocity.y = 240;
+					me.velocity.x = xDirection * me.speed;
+
+					for (var gameObjectIndex = 0; gameObjectIndex < gameObjects.length; gameObjectIndex++) {
+						/// point of optimization
+						var gameObject = gameObjects[gameObjectIndex];
+						if(gameObject.tags.indexOf('spike') != -1) {
+							var differenceVector = gameObject.position.subtract(me.position);
+							if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
+								// jump over
+								if(differenceVector.magnitude() < 100) {
+									me.velocity.y = 240;
+								}
 							}
 						}
-					}
-				};
+					};
+				} else {
+					// idle activity
+				}
 			}
 		}
 	}
@@ -270,6 +295,37 @@ function Enemy(x, y, type) {
 			}
 		}
 	});
+}
+
+function Obstacle(x, y, type) {
+
+	var w = 10;
+	var h = 10;
+	if(type == 'spike') {
+		w = 20;
+		h = 50;
+	}
+
+	Entity.call(this, x, y, w, h);
+
+	var me = this;
+
+
+	if(type == 'spike') {
+		me.tags.push('spike');
+		me.img.src = 'images/spike.png';
+		me.collisionCallbacks.push(function(gameObject, side) {
+			if(gameObject.tags.indexOf('damageable') != -1) {
+				gameObject.changeHealth(-1);
+				var differenceVector = gameObject.position.subtract(me.position);
+				differenceVector = differenceVector.normalize();
+				differenceVector = differenceVector.scale(200);
+				differenceVector.y += 10;
+				gameObject.grounded = null;
+				gameObject.velocity = gameObject.velocity.add(differenceVector);
+			}
+		});
+	}
 }
 
 function DamageableObject(x, y, type, w, h) {
@@ -320,7 +376,22 @@ function DamageableObject(x, y, type, w, h) {
 		me.healthbar.w = me.w * decimal;
 
 		if(me.health <= 0) {
-			me.remove();
+			if(me != player) {
+				me.remove();
+			}
+
+			if(me.tags.indexOf('enemy') != -1) {
+				if(Math.random() > 0) {
+					var coin = new GameObject(me.position.x, me.position.y, 15, 15);
+					coin.fillColor = 'yellow';
+					coin.collisionCallbacks.push(function(gameObject) {
+						if(gameObject == player) {
+							coins++;
+							coin.remove();
+						}
+					})
+				}
+			}
 		}
 	}
 }
@@ -343,6 +414,7 @@ function loseLife() {
 	player.velocity = new Vector2D(0, 0);
 
 	if(lives == 0) {
+		console.log('test');
 		player.remove();
 	} else {
 		player.setHealth(player.maxHealth);
