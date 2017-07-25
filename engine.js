@@ -604,10 +604,19 @@ function engineTick(milliseconds) {
 		}
 
 		if(!hittingStatic) {
+			if(currentObject == player) {
+			}
 			if(currentObject.grounded != null) {
+				// var yDiff = currentObject.position.y - currentObject.h - currentObject.grounded.position.y;
+				// if(yDiff > 1 || yDiff < -currentObject.h + currentObject.grounded.h) {
+				// 	console.log('>>>');
+				// 	currentObject.grounded = null;
+				// }
+
 				var feetPosition = currentObject.position.subtract(new Vector2D(0, currentObject.h));
-				var differenceVector = currentObject.grounded.position.subtract(feetPosition);
-				if(differenceVector.magnitude() > 1) {
+				// var referenceVector = new Vector(currentObject.grounded.position.y
+				var differenceVector = feetPosition.subtract(currentObject.grounded.position);
+				if(differenceVector.y > 1 || differenceVector.x < -currentObject.w || differenceVector.x > currentObject.grounded.w) {
 					currentObject.grounded = null;
 				}
 			}

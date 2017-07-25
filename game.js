@@ -72,8 +72,12 @@ function initialize() {
 	});
 
 	keyDownCallbacks['W'].push(function() {
-		if(player.grounded) {
-			player.position.y += 5;
+		console.log('keyd');
+
+		if(player.grounded != null) {
+			console.log('jumpd');
+			player.grounded = null;
+			// player.position.y += 5;
 			player.velocity.y = 300;
 		}
 	});
@@ -119,7 +123,7 @@ function initialize() {
 
 		shuriken.collisionCallbacks.push(function(gameObject, side) {
 			if(shuriken.tags.indexOf('active') != -1) {
-				if(gameObject != player) {
+				if(gameObject != player && gameObject.tags.indexOf('ui') == -1) {
 					if(gameObject.tags.indexOf('damageable') != -1) {
 						gameObject.changeHealth(-10);
 						shuriken.velocity = new Vector2D(0, 0);
@@ -181,7 +185,7 @@ function generateLevel(levelSize, difficulty, type) {
 		if(Math.random() > 0.5) {
 			new Obstacle(levelSize * Math.random(), 500, 'spike');
 		} else {
-			new Enemy(levelSize * Math.random(), 500, 'wolf');
+			new Enemy(400 + (levelSize - 400) * Math.random(), 500, 'wolf');
 		}
 
 		mappedLength += randomWidth;
@@ -211,7 +215,9 @@ function gameUpdate() {
 	for (var shurikenIndex = 0; shurikenIndex < shurikens.length; shurikenIndex++) {
 		var shuriken = shurikens[shurikenIndex];
 
+
 		if(shuriken.tags.indexOf('active') != -1) {
+			console.log(shuriken.rotation);
 			shuriken.rotation += 0.1;
 		}
 	};
@@ -362,7 +368,8 @@ function DamageableObject(x, y, type, w, h) {
 	me.healthbar.fillColor = 'green';
 	me.healthbar.positioning = 'relative';
 	me.healthbar.parent = me;
-	// me.healthbar.static = true;
+	me.healthbar.tags.push('ui');
+	me.healthbar.kinematic = true;
 
 	me.setHealth = function(value) {
 		me.health = value;
