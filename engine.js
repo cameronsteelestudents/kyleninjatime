@@ -25,6 +25,7 @@ var screenWidth;
 var screenHeight;
 
 var engineGravity = true;
+var gravityForce = 5;
 
 var worldOffset = new Vector2D(0, 0);
 
@@ -122,7 +123,7 @@ function Entity(x, y, w, h, parent, collisionGroupID) {
 	me.fixedPosition = false;
 	me.positioning = 'default';
 
-	me.grounded = null;
+	me.ground = null;
 	me.static = false;
 	me.kinematic = false;
 	me.friction = 0.1;
@@ -537,12 +538,12 @@ function engineTick(milliseconds) {
 		if(!currentObject.active) continue;
 
 		if(engineGravity == true) {
-			if(currentObject.static == false && currentObject.kinematic == false && currentObject.grounded == null) {
-				currentObject.velocity.y -= 5;
+			if(currentObject.static == false && currentObject.kinematic == false && currentObject.ground == null) {
+				currentObject.velocity.y -= gravityForce;
 			}
 		}
 
-		if (currentObject.friction > 0 && currentObject.grounded != null) {
+		if (currentObject.friction > 0 && currentObject.ground != null) {
 			currentObject.velocity = currentObject.velocity.scale(1 - currentObject.friction);
 			if(currentObject.velocity.magnitude() < 0.2) {
 				currentObject.velocity.x = 0;
@@ -586,7 +587,7 @@ function engineTick(milliseconds) {
 
 				if (check) {
 					if(collider.static) {
-						currentObject.grounded = collider;
+						currentObject.ground = collider;
 						hittingStatic = true;
 						currentObject.position.y = collider.position.y + currentObject.h;
 					}
@@ -606,18 +607,12 @@ function engineTick(milliseconds) {
 		if(!hittingStatic) {
 			if(currentObject == player) {
 			}
-			if(currentObject.grounded != null) {
-				// var yDiff = currentObject.position.y - currentObject.h - currentObject.grounded.position.y;
-				// if(yDiff > 1 || yDiff < -currentObject.h + currentObject.grounded.h) {
-				// 	console.log('>>>');
-				// 	currentObject.grounded = null;
-				// }
-
+			if(currentObject.ground != null) {
 				var feetPosition = currentObject.position.subtract(new Vector2D(0, currentObject.h));
-				// var referenceVector = new Vector(currentObject.grounded.position.y
-				var differenceVector = feetPosition.subtract(currentObject.grounded.position);
-				if(differenceVector.y > 1 || differenceVector.x < -currentObject.w || differenceVector.x > currentObject.grounded.w) {
-					currentObject.grounded = null;
+				// var referenceVector = new Vector(currentObject.ground.position.y
+				var differenceVector = feetPosition.subtract(currentObject.ground.position);
+				if(differenceVector.y > 1 || differenceVector.x < -currentObject.w || differenceVector.x > currentObject.ground.w) {
+					currentObject.ground = null;
 				}
 			}
 		}

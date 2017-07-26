@@ -2,6 +2,7 @@
 
 var playerSpeed = 50;
 var maxSpeed = 200;
+var maxKnockback = 500;
 var lives = 3;
 var coins = 0;
 var facing = 0;
@@ -11,6 +12,10 @@ var grapplingHooked = false;
 
 var currentMouseX = 0;
 var currentMouseY = 0;
+var localMouseX = 0;
+var localMouseY = 0;
+
+gravityForce = 10;
 
 var shurikens = [];
 
@@ -21,7 +26,9 @@ window.addEventListener('load', function() {
 var grapplingHook;
 var player;
 function initialize() {
-	player = new DamageableObject(0, 0, 'ninja', 50, 50);
+	player = new DamageableObject(0, -400, 'ninja', 50, 50);
+	player.health = 5000;
+	player.maxHealth = 5000;
 	player.img.src = 'images/ninja0.png';
 
 	grapplingHook = new GameObject(player.position.x, player.position.y, 20, 20);
@@ -43,16 +50,11 @@ function initialize() {
 		}
 	});
 
-	var boulder = new DamageableObject(450, 0, 'boulder', 250, 25);
-	// var boulder = new DamageableObject(499, 0, 25, 25, 'boulder');
-
-	var wolf = new Enemy(500, -200, 'wolf');
-
-	var spike = new Obstacle(300, 0, 'spike');
+	// var boulder = new DamageableObject(450, 0, 'boulder', 250, 25);
 
 	window.addEventListener('mousemove', function(event) {
-		currentMouseX = event.clientX + player.position.x - (screenWidth / 2);
-		currentMouseY = -event.clientY + player.position.y + (screenHeight / 2);
+		localMouseX = event.clientX;
+		localMouseY = event.clientY;
 	});
 
 	keyHoldCallbacks['A'].push(function() {
@@ -72,12 +74,8 @@ function initialize() {
 	});
 
 	keyDownCallbacks['W'].push(function() {
-		console.log('keyd');
-
-		if(player.grounded != null) {
-			console.log('jumpd');
-			player.grounded = null;
-			// player.position.y += 5;
+		if(player.ground != null) {
+			player.ground = null;
 			player.velocity.y = 300;
 		}
 	});
@@ -89,18 +87,17 @@ function initialize() {
 			var mousePosition = new Vector2D(currentMouseX, currentMouseY);
 			var differenceVector = mousePosition.subtract(grapplingHook.position);
 			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(300);
+			differenceVector = differenceVector.scale(500);
 			grapplingHook.velocity = differenceVector;
 			grapplingReady = false;
 		}
-
 	});
 
 	keyHoldCallbacks['E'].push(function() {
 		if(grapplingHooked) {
 			var differenceVector = grapplingHook.position.subtract(player.position);
 			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(10);
+			differenceVector = differenceVector.scale(40);
 			player.velocity = player.velocity.add(differenceVector);
 			// player.velocity = differenceVector;
 		}
@@ -164,7 +161,7 @@ function initialize() {
 	// ground.static = true;
 }
 
-generateLevel(10000, 'normal', 'mountainous');
+generateLevel(10000, 'normal', 'cave');
 
 function generateLevel(levelSize, difficulty, type) {
 	var mappedLength = 0;
@@ -180,18 +177,26 @@ function generateLevel(levelSize, difficulty, type) {
 		var randomWidth = Math.floor(Math.random() * 500);
 		var newY = lastY + ((Math.random() * maxYDiff) - (maxYDiff/2));
 		var ground = new GameObject(mappedLength, newY, randomWidth, 25);
+		ground.fillColor = 'black';
+		ground.static = true;
+		if(type == 'cave') {
+			var ceiling = new GameObject(mappedLength, newY + 300, randomWidth, 25);
+			ceiling.static = true;
+			ceiling.fillColor = 'grey';
+		}
 		lastY = newY;
 
 		if(Math.random() > 0.5) {
-			new Obstacle(levelSize * Math.random(), 500, 'spike');
-		} else {
-			new Enemy(400 + (levelSize - 400) * Math.random(), 500, 'wolf');
+			if(Math.random() > 0.5) {
+				new Obstacle(mappedLength + Math.random() * randomWidth, newY + 50, 'spike');
+			} else {
+				new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'wolf');
+			}
 		}
 
 		mappedLength += randomWidth;
 		// var ground = new GameObject(mappedLength, -300 - (Math.random() * 100), randomWidth, 25);
-		ground.fillColor = 'black';
-		ground.static = true;
+
 	}
 
 	var objectCount = 20;
@@ -205,6 +210,9 @@ function gameUpdate() {
 	ctx.font = '30px Arial';
 	ctx.fillStyle = 'red';
 	ctx.fillText('lives: ' + lives, 10, 30);
+
+	currentMouseX = localMouseX + player.position.x - (screenWidth / 2);
+	currentMouseY = -localMouseY + player.position.y + (screenHeight / 2);
 
 	worldOffset = player.position.add(new Vector2D(-screenWidth / 2, screenHeight / 2));
 
@@ -245,7 +253,7 @@ function Enemy(x, y, type) {
 
 	me.think = function() {
 		if(type == 'wolf') {
-			if(me.grounded) {
+			if(me.ground) {
 				var differenceVector = me.position.subtract(player.position);
 				var distance = differenceVector.magnitude();
 
@@ -269,7 +277,7 @@ function Enemy(x, y, type) {
 							if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
 								// jump over
 								if(differenceVector.magnitude() < 100) {
-									me.velocity.y = 240;
+									me.velocity.y = 35 * gravityForce;
 								}
 							}
 						}
@@ -289,11 +297,7 @@ function Enemy(x, y, type) {
 			differenceVector = differenceVector.normalize();
 			differenceVector = differenceVector.scale(500);
 			player.position.y += 5;
-			player.velocity = player.velocity.add(differenceVector);
-
-			if(player.health <= 0) {
-				loseLife();
-			}
+			player.knockback(differenceVector);
 
 			if(side == 'top') {
 				me.remove();
@@ -327,8 +331,9 @@ function Obstacle(x, y, type) {
 				differenceVector = differenceVector.normalize();
 				differenceVector = differenceVector.scale(200);
 				differenceVector.y += 10;
-				gameObject.grounded = null;
-				gameObject.velocity = gameObject.velocity.add(differenceVector);
+				gameObject.ground = null;
+
+				gameObject.knockback(differenceVector);
 			}
 		});
 	}
@@ -385,6 +390,10 @@ function DamageableObject(x, y, type, w, h) {
 		if(me.health <= 0) {
 			if(me != player) {
 				me.remove();
+			} else {
+				if(player.health <= 0) {
+					loseLife();
+				}
 			}
 
 			if(me.tags.indexOf('enemy') != -1) {
@@ -408,6 +417,14 @@ function GameObject(x, y, w, h, parent, collisionGroupID) {
 
 	var me = this;
 
+	me.knockback = function(vector) {
+		me.velocity = me.velocity.add(vector);
+		if(me.velocity.magnitude() > maxKnockback) {
+			me.velocity = me.velocity.normalize();
+			me.velocity = me.velocity.scale(maxKnockback);
+		}
+	}
+
 	me.collisionCallbacks.push(function(collider) {
 		if(collider.static) {
 			me.velocity.y = 0;
@@ -428,4 +445,21 @@ function loseLife() {
 	}
 }
 
+function drawBackground() {
+	var backgroundImage = new Image();
+	backgroundImage.src = 'images/back_cave.png';
+	// ctx.drawImage(backgroundImage, -(player.position.x), (player.position.y / 2), 2000, 2000);
+
+	var backgroundX = player.position.x / 2;
+	var rightBackgroundX = backgroundX + 2000;
+	console.log(rightBackgroundX);
+	if(rightBackgroundX > screenWidth) {
+		ctx.drawImage(backgroundImage, rightBackgroundX, (player.position.y / 2), 2000, 2000);
+	}
+
+	ctx.drawImage(backgroundImage, -(player.position.x / 2), (player.position.y / 2), 2000, 2000);
+	// ctx.drawImage(backgroundImage, -(player.position.x / 3), (player.position.y / 3), 2000, 2000);
+}
+
+updateHooks.push(drawBackground);
 updateHooks.push(gameUpdate);
