@@ -114,6 +114,7 @@ function initialize() {
 		differenceVector = differenceVector.scale(300);
 		shuriken.velocity = shuriken.velocity.add(player.velocity);
 		shuriken.velocity = shuriken.velocity.add(differenceVector);
+		
 		shuriken.friction = 1;
 		shuriken.tags.push('shuriken');
 		shuriken.tags.push('active');
@@ -223,9 +224,13 @@ function gameUpdate() {
 	for (var shurikenIndex = 0; shurikenIndex < shurikens.length; shurikenIndex++) {
 		var shuriken = shurikens[shurikenIndex];
 
+		var currentTime = new Date();
+		if(currentTime - shuriken.createTime > 3000) {
+			shuriken.remove();
+			shurikens.splice(shurikens.indexOf(shuriken), 1);
+		}
 
 		if(shuriken.tags.indexOf('active') != -1) {
-			console.log(shuriken.rotation);
 			shuriken.rotation += 0.1;
 		}
 	};
@@ -416,6 +421,8 @@ function GameObject(x, y, w, h, parent, collisionGroupID) {
 	Entity.call(this, x, y, w, h, parent, collisionGroupID);
 
 	var me = this;
+
+	me.createTime = new Date();
 
 	me.knockback = function(vector) {
 		me.velocity = me.velocity.add(vector);
