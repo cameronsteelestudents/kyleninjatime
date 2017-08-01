@@ -1,6 +1,6 @@
 // PARALLAX
 
-var playerSpeed = 50;
+var playerSpeed = 1000;
 var maxSpeed = 200;
 var maxKnockback = 500;
 var lives = 3;
@@ -191,7 +191,7 @@ function generateLevel(levelSize, difficulty, type) {
 			if(Math.random() > 0.5) {
 				new Obstacle(mappedLength + Math.random() * randomWidth, newY + 50, 'spike');
 			} else {
-				new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'wolf');
+				// new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'wolf');
 			}
 		}
 
@@ -452,19 +452,30 @@ function loseLife() {
 	}
 }
 
+var backgroundImage = new Image(); // outside of drawBackground to prevent computer from reloading image every draw.
+backgroundImage.src = 'images/back_cave.png';
 function drawBackground() {
-	var backgroundImage = new Image();
-	backgroundImage.src = 'images/back_cave.png';
 	// ctx.drawImage(backgroundImage, -(player.position.x), (player.position.y / 2), 2000, 2000);
 
-	var backgroundX = player.position.x / 2;
-	var rightBackgroundX = backgroundX + 2000;
-	console.log(rightBackgroundX);
-	if(rightBackgroundX > screenWidth) {
-		ctx.drawImage(backgroundImage, rightBackgroundX, (player.position.y / 2), 2000, 2000);
+	var backgroundWidth = 2000;
+	var backgroundHeight = 2000;
+
+	var modX = player.position.x / 2;
+	var firstBackgroundX = Math.floor(modX / backgroundWidth) * backgroundWidth - modX; // get the position of the first background we actually need to draw
+
+	// var xOffset = modX % backgroundWidth; // how far into the background
+	// console.log([xOffset, firstBackgroundX]);
+	for (var backgroundIndex = 0; backgroundIndex < screenWidth / backgroundWidth + 1; backgroundIndex++) {
+		var backgroundX = firstBackgroundX + (backgroundIndex * backgroundWidth);
+		ctx.drawImage(backgroundImage, backgroundX, (player.position.y / 2), backgroundWidth, backgroundHeight);
 	}
 
-	ctx.drawImage(backgroundImage, -(player.position.x / 2), (player.position.y / 2), 2000, 2000);
+	// var rightBackgroundX = backgroundX + 2000;
+	// if(rightBackgroundX > screenWidth) {
+	// 	ctx.drawImage(backgroundImage, rightBackgroundX, (player.position.y / 2), 2000, 2000);
+	// }
+
+	// ctx.drawImage(backgroundImage, -(player.position.x / 2), (player.position.y / 2), 2000, 2000);
 	// ctx.drawImage(backgroundImage, -(player.position.x / 3), (player.position.y / 3), 2000, 2000);
 }
 
