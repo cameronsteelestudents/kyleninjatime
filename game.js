@@ -74,10 +74,10 @@ function initialize() {
 	});
 
 	keyDownCallbacks['W'].push(function() {
-		if(player.ground != null) {
+		// if(player.ground != null) {
 			player.ground = null;
 			player.velocity.y = 300;
-		}
+		// }
 	});
 
 	keyDownCallbacks['Q'].push(function() {
