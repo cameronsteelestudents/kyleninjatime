@@ -2,6 +2,10 @@
 // drifting, we need friction
 // hitting objects transfers velocity
 
+// engine optimization
+	// don't draw everything always
+	// collision optimization
+
 // save player states so if they can rejoin
 
 // powerup ideas:
@@ -591,7 +595,6 @@ function engineTick(milliseconds) {
 				checkedCollisions.push(collisionCheckString);
 
 				if (check) {
-
 				    // var differenceVector = currentObject.position.subtract(collider.position);
 				    // var collisionAngle = Math.atan2(differenceVector.y, differenceVector.x);
 				    // var magnitude1 = currentObject.velocity.magnitude();
@@ -618,7 +621,7 @@ function engineTick(milliseconds) {
 							colliderNormal = new Vector2D(0, -1);
 						    var perpendicular = colliderNormal.scale(currentObject.velocity.dotProduct(colliderNormal) / colliderNormal.dotProduct(colliderNormal));
 						    var parallel = currentObject.velocity.subtract(perpendicular);
-						    var newV = parallel.scale(collider.friction).subtract(perpendicular.scale(1));
+						    var newV = parallel.scale(collider.friction).subtract(perpendicular.scale(collider.restitution));
 						    currentObject.velocity = newV;
 						    currentObject.position.y = collider.position.y - collider.h;
 						} else {

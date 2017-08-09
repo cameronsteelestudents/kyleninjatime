@@ -28,13 +28,56 @@ window.addEventListener('load', function() {
 
 var grapplingHook;
 var player;
+var dragon;
 function initialize() {
 	player = new DamageableObject(0, -400, 'ninja', 50, 50);
 	player.health = 5000;
 	player.maxHealth = 5000;
 	player.img.src = 'images/ninja0.png';
 
+	dragon = new DamageableObject(0, -400, 'pet', 50, 50);
+	dragon.kinematic = true;
+	dragon.tags.push('thinker');
+
+	dragon.think = function() {
+		var differenceVector = null;
+
+		if(dragon.status == 'attacking') {
+			differenceVector = dragon.target.position.subtract(dragon.position);
+
+			var currentTime = new Date();
+			if(currentTime - dragon.lastHitTime > dragon.attackSpeed * 1000) {
+				if(differenceVector.magnitude() <= dragon.attackRange) {
+					var effectPosition = dragon.position.add(differenceVector.scale(0.5));
+					var hitEffect = new GameObject(effectPosition.x, effectPosition.y, 'particleEffect', 25, 25);
+					hitEffect.img.src = 'images/slash.png';
+					dragon.target.changeHealth(-10);
+					dragon.lastHitTime = currentTime;
+				}
+			}
+		} else {
+			differenceVector = player.position.subtract(dragon.position);
+			// differenceVector = differenceVector.normalize();
+			// differenceVector = differenceVector.scale(10);
+			// dragon.velocity = differenceVector;
+
+		}
+
+		var dragonMaxSpeed = 50;
+		var distance = differenceVector.magnitude();
+		differenceVector = differenceVector.scale(0.25);
+		if(differenceVector.magnitude() > dragonMaxSpeed) {
+			differenceVector = differenceVector.normalize();
+			differenceVector = differenceVector.scale(dragonMaxSpeed);
+		}
+		dragon.velocity = dragon.velocity.add(differenceVector);
+	}
+
+	dragon.img.src = 'images/dragon_flying.gif';
+
+
 	grapplingHook = new GameObject(player.position.x, player.position.y, 20, 20);
+	grapplingHook.kinematic = true;
 	grapplingHook.img.src = 'images/grapplingHook.png';
 	grapplingHook.active = false;
 	grapplingHook.collisionCallbacks.push(function(gameObject, side) {
@@ -90,7 +133,8 @@ function initialize() {
 			var mousePosition = new Vector2D(currentMouseX, currentMouseY);
 			var differenceVector = mousePosition.subtract(grapplingHook.position);
 			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(500);
+			differenceVector = differenceVector.scale(1000);
+			console.log(differenceVector);
 			grapplingHook.velocity = differenceVector;
 			grapplingReady = false;
 		}
@@ -178,7 +222,7 @@ function generateLevel(levelSize, difficulty, type) {
 	}
 
 	while(mappedLength < levelSize) {
-		var randomWidth = Math.floor(Math.random() * 500);
+		var randomWidth = 50 + Math.floor(Math.random() * 500);
 		var newY = lastY + ((Math.random() * maxYDiff) - (maxYDiff/2));
 		var ground = new GameObject(mappedLength, newY, randomWidth, 25);
 		ground.fillColor = 'black';
@@ -247,8 +291,19 @@ function gameUpdate(deltaTime) {
 
 	for (var objectIndex = 0; objectIndex < gameObjects.length; objectIndex++) {
 		var gameObject = gameObjects[objectIndex];
-		if(gameObject.tags.indexOf('enemy') != -1) {
+		if(gameObject.tags.indexOf('thinker') != -1) {
 			gameObject.think();
+		}
+
+		var dragonSight = 200;
+		if(gameObject.tags.indexOf('enemy') != -1) {
+			var differenceVector = dragon.position.subtract(gameObject.position);
+			if(differenceVector.magnitude() < dragonSight) {
+				if(dragon.target == null) {
+					dragon.target = gameObject;
+					dragon.status = 'attacking';
+				}
+			}
 		}
 
 		if(gameObject.tags.indexOf('damageable') != -1) {
@@ -273,9 +328,8 @@ function Enemy(x, y, type) {
 
 	me.speed = 200;
 
-	var visionRadius = 300;
-
 	me.tags.push('enemy');
+	me.tags.push('thinker');
 
 	switch(type) {
 		case 'spider': {
@@ -293,7 +347,7 @@ function Enemy(x, y, type) {
 					var distance = differenceVector.magnitude();
 
 					// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
-					if(distance < visionRadius) {
+					if(distance < me.visionRadius) {
 						if(player.position.x < me.position.x) {
 							xDirection = -1;
 						} else if(player.position.x > me.position.x) {
@@ -329,7 +383,7 @@ function Enemy(x, y, type) {
 					var distance = differenceVector.magnitude();
 
 					// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
-					if(distance < visionRadius) {
+					if(distance < me.visionRadius) {
 						if(player.position.x < me.position.x) {
 							xDirection = -1;
 						} else if(player.position.x > me.position.x) {
@@ -433,9 +487,17 @@ function Obstacle(x, y, type) {
 	}
 }
 
-function DamageableObject(x, y, type, w, h) {
+function DamageableObject(x, y, type, w, h) { /// extend to another object that is a character
 	var me = this;
 
+	me.damage = 
+	me.visionRadius = 300;
+	me.attackRange = 300;
+	me.target = null;
+	me.attackSpeed = 1;
+	me.lastHitTime = new Date();
+
+	me.status = false;
 	me.states = [];
 
 	if(!w) {
