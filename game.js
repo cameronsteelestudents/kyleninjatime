@@ -1,9 +1,12 @@
-// PARALLAX
+
+// momentum collision physics
+	// boulders
 
 var playerSpeed = 1000;
 var maxSpeed = 200;
 var maxKnockback = 500;
 var lives = 3;
+
 var coins = 0;
 var facing = 0;
 
@@ -111,8 +114,8 @@ function initialize() {
 		var mousePosition = new Vector2D(currentMouseX, currentMouseY);
 		var differenceVector = mousePosition.subtract(player.position);
 		differenceVector = differenceVector.normalize();
-		differenceVector = differenceVector.scale(300);
-		shuriken.velocity = shuriken.velocity.add(player.velocity);
+		differenceVector = differenceVector.scale(1000);
+		// shuriken.velocity = shuriken.velocity.add(player.velocity);
 		shuriken.velocity = shuriken.velocity.add(differenceVector);
 		
 		shuriken.friction = 1;
@@ -191,7 +194,15 @@ function generateLevel(levelSize, difficulty, type) {
 			if(Math.random() > 0.5) {
 				new Obstacle(mappedLength + Math.random() * randomWidth, newY + 50, 'spike');
 			} else {
-				// new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'wolf');
+				switch(type) {
+					case 'cave': {
+						new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'spider');
+					} break;
+
+					default: {
+						new Enemy(mappedLength + Math.random() * randomWidth, newY + 100, 'wolf');
+					}
+				}
 			}
 		}
 
@@ -202,12 +213,11 @@ function generateLevel(levelSize, difficulty, type) {
 
 	var objectCount = 20;
 	while(objectCount > 0) {
-
 		objectCount--;
 	}
 }
 
-function gameUpdate() {
+function gameUpdate(deltaTime) {
 	ctx.font = '30px Arial';
 	ctx.fillStyle = 'red';
 	ctx.fillText('lives: ' + lives, 10, 30);
@@ -231,7 +241,7 @@ function gameUpdate() {
 		}
 
 		if(shuriken.tags.indexOf('active') != -1) {
-			shuriken.rotation += 0.1;
+			shuriken.rotation += 12 * deltaTime;
 		}
 	};
 
@@ -239,6 +249,19 @@ function gameUpdate() {
 		var gameObject = gameObjects[objectIndex];
 		if(gameObject.tags.indexOf('enemy') != -1) {
 			gameObject.think();
+		}
+
+		if(gameObject.tags.indexOf('damageable') != -1) {
+			for (var stateIndex = 0; stateIndex < gameObject.states.length; stateIndex++) {
+				var state = gameObject.states[stateIndex];
+				if(state.nature == 'poison') {
+					gameObject.changeHealth(state.dps * deltaTime);
+					if(new Date() - state.start > state.duration * 1000) {
+						gameObject.states.splice(stateIndex, 1);
+						stateIndex--;
+					}
+				}
+			};
 		}
 	};
 }
@@ -254,55 +277,121 @@ function Enemy(x, y, type) {
 
 	me.tags.push('enemy');
 
+	switch(type) {
+		case 'spider': {
+			me.img.src = 'images/spider.png';
+		} break;
+	}
+
 	var xDirection = 0;
 
 	me.think = function() {
-		if(type == 'wolf') {
-			if(me.ground) {
-				var differenceVector = me.position.subtract(player.position);
-				var distance = differenceVector.magnitude();
+		switch(type) {
+			case 'wolf': {
+				if(me.ground) {
+					var differenceVector = me.position.subtract(player.position);
+					var distance = differenceVector.magnitude();
 
-				// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
-				if(distance < visionRadius) {
-					if(player.position.x < me.position.x) {
-						xDirection = -1;
-					} else if(player.position.x > me.position.x) {
-						xDirection = 1;
-					} else {
-						xDirection = 0;
-					}
+					// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
+					if(distance < visionRadius) {
+						if(player.position.x < me.position.x) {
+							xDirection = -1;
+						} else if(player.position.x > me.position.x) {
+							xDirection = 1;
+						} else {
+							xDirection = 0;
+						}
 
-					me.velocity.x = xDirection * me.speed;
+						me.velocity.x = xDirection * me.speed;
 
-					for (var gameObjectIndex = 0; gameObjectIndex < gameObjects.length; gameObjectIndex++) {
-						/// point of optimization
-						var gameObject = gameObjects[gameObjectIndex];
-						if(gameObject.tags.indexOf('spike') != -1) {
-							var differenceVector = gameObject.position.subtract(me.position);
-							if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
-								// jump over
-								if(differenceVector.magnitude() < 100) {
-									me.velocity.y = 35 * gravityForce;
+						for (var gameObjectIndex = 0; gameObjectIndex < gameObjects.length; gameObjectIndex++) {
+							/// point of optimization
+							var gameObject = gameObjects[gameObjectIndex];
+							if(gameObject.tags.indexOf('spike') != -1) {
+								var differenceVector = gameObject.position.subtract(me.position);
+								if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
+									// jump over
+									if(differenceVector.magnitude() < 100) {
+										me.velocity.y = 35 * gravityForce;
+									}
 								}
 							}
-						}
-					};
-				} else {
-					// idle activity
+						};
+					} else {
+						// idle activity
+					}
 				}
-			}
+			} break;
+
+			case 'spider': {
+				if(me.ground) {
+					var differenceVector = me.position.subtract(player.position);
+					var distance = differenceVector.magnitude();
+
+					// if(distance < visionRadius && playerNinjaStealthIsNotActive) {
+					if(distance < visionRadius) {
+						if(player.position.x < me.position.x) {
+							xDirection = -1;
+						} else if(player.position.x > me.position.x) {
+							xDirection = 1;
+						} else {
+							xDirection = 0;
+						}
+
+						me.velocity.x = xDirection * me.speed;
+
+						for (var gameObjectIndex = 0; gameObjectIndex < gameObjects.length; gameObjectIndex++) {
+							/// point of optimization
+							var gameObject = gameObjects[gameObjectIndex];
+							if(gameObject.tags.indexOf('spike') != -1) {
+								var differenceVector = gameObject.position.subtract(me.position);
+								if(xDirection < 0 && differenceVector.x < 0 || xDirection > 0 && differenceVector.x > 0) {
+									// jump over
+									if(differenceVector.magnitude() < 100) {
+										me.velocity.y = 35 * gravityForce;
+									}
+								}
+							}
+						};
+					} else {
+						// idle activity
+					}
+				}
+			} break;
 		}
 	}
 
 	me.collisionCallbacks.push(function(collider, side) {
 		if(collider == player) {
-			player.changeHealth(-10);
+			switch(type) {
+				case 'wolf': {
+					player.changeHealth(-10);
 
-			var differenceVector = player.position.subtract(me.position);
-			differenceVector = differenceVector.normalize();
-			differenceVector = differenceVector.scale(500);
-			player.position.y += 5;
-			player.knockback(differenceVector);
+					var differenceVector = player.position.subtract(me.position);
+					differenceVector = differenceVector.normalize();
+					differenceVector = differenceVector.scale(500);
+					player.position.y += 5;
+					player.knockback(differenceVector);
+				} break;
+
+				case 'spider': {
+					var differenceVector = player.position.subtract(me.position);
+					differenceVector = differenceVector.normalize();
+					differenceVector = differenceVector.scale(100);
+					player.position.y += 5;
+					player.knockback(differenceVector);
+
+					if(Math.random() > 0.75) {
+						player.states.push({
+							nature: 'poison',
+							dps: -10,
+							start: new Date(),
+							duration: Math.random() * 20
+						});
+						player.img.src = 'images/ninjaPoison.png';
+					}
+				} break;
+			}
 
 			if(side == 'top') {
 				me.remove();
@@ -346,6 +435,8 @@ function Obstacle(x, y, type) {
 
 function DamageableObject(x, y, type, w, h) {
 	var me = this;
+
+	me.states = [];
 
 	if(!w) {
 		switch(type) {
@@ -463,20 +554,10 @@ function drawBackground() {
 	var modX = player.position.x / 2;
 	var firstBackgroundX = Math.floor(modX / backgroundWidth) * backgroundWidth - modX; // get the position of the first background we actually need to draw
 
-	// var xOffset = modX % backgroundWidth; // how far into the background
-	// console.log([xOffset, firstBackgroundX]);
 	for (var backgroundIndex = 0; backgroundIndex < screenWidth / backgroundWidth + 1; backgroundIndex++) {
 		var backgroundX = firstBackgroundX + (backgroundIndex * backgroundWidth);
 		ctx.drawImage(backgroundImage, backgroundX, (player.position.y / 2), backgroundWidth, backgroundHeight);
 	}
-
-	// var rightBackgroundX = backgroundX + 2000;
-	// if(rightBackgroundX > screenWidth) {
-	// 	ctx.drawImage(backgroundImage, rightBackgroundX, (player.position.y / 2), 2000, 2000);
-	// }
-
-	// ctx.drawImage(backgroundImage, -(player.position.x / 2), (player.position.y / 2), 2000, 2000);
-	// ctx.drawImage(backgroundImage, -(player.position.x / 3), (player.position.y / 3), 2000, 2000);
 }
 
 updateHooks.push(drawBackground);
