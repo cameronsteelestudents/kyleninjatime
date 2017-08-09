@@ -126,7 +126,8 @@ function Entity(x, y, w, h, parent, collisionGroupID) {
 	me.ground = null;
 	me.static = false;
 	me.kinematic = false;
-	me.friction = 0.1;
+	me.friction = 1;
+	me.restitution = 100;
 	me.rotation = 0;
 	me.velocity = new Vector2D(0, 0);
 	me.acceleration = new Vector2D(0, 0);
@@ -286,6 +287,10 @@ function Vector2D(x, y) {
 		var xDifference = me.x - vector.x;
 		var yDifference = me.y - vector.y;
 		return new Vector2D(xDifference, yDifference);
+	}
+
+	me.dotProduct = function(vector) {
+		return (me.x * vector.x + me.y * vector.y);
 	}
 
 	me.multiply = function(vector) {
@@ -586,10 +591,44 @@ function engineTick(milliseconds) {
 				checkedCollisions.push(collisionCheckString);
 
 				if (check) {
+
+				    // var differenceVector = currentObject.position.subtract(collider.position);
+				    // var collisionAngle = Math.atan2(differenceVector.y, differenceVector.x);
+				    // var magnitude1 = currentObject.velocity.magnitude();
+				    // var magnitude2 = collider.velocity.magnitude();
+				    // var direction1 = Math.atan2(currentObject.velocity.y, currentObject.velocity.x);
+				    // var direction2 = Math.atan2(collider.velocity.y, collider.velocity.x);
+				    // var newXSpeed1 = magnitude1 * Math.cos(direction1 - collisionAngle);
+				    // var newYSpeed1 = magnitude1 * Math.sin(direction1 - collisionAngle);
+				    // var newXSpeed2 = magnitude2 * Math.cos(direction2 - collisionAngle);
+				    // var newYSpeed2 = magnitude2 * Math.sin(direction2 - collisionAngle);
+				    // var finalXSpeed1 = ((currentObject.mass - collider.mass) * newXSpeed1 + (collider.mass + collider.mass) * newXSpeed2) / (currentObject.mass + collider.mass);
+				    // var finalXSpeed2 = ((currentObject.mass + collider.mass) * newXSpeed1 + (collider.mass + collider.mass) * newXSpeed2) / (currentObject.mass + collider.mass);
+				    // var finalYSpeed1 = newYSpeed1;
+				    // var finalYSpeed2 = newYSpeed2;
+				    // currentObject.velocity.x = Math.cos(collisionAngle) * finalXSpeed1 + Math.cos(collisionAngle + Math.PI/2) * finalYSpeed1;
+				    // currentObject.velocity.y = Math.sin(collisionAngle) * finalXSpeed1 + Math.sin(collisionAngle + Math.PI/2) * finalYSpeed1;
+				    // collider.velocity.x = Math.cos(collisionAngle) * finalXSpeed2 + Math.cos(collisionAngle + Math.PI/2) * finalYSpeed2;
+				    // collider.velocity.y = Math.sin(collisionAngle) * finalXSpeed2 + Math.sin(collisionAngle + Math.PI/2) * finalYSpeed2;
+
 					if(collider.static) {
-						currentObject.ground = collider;
-						hittingStatic = true;
-						currentObject.position.y = collider.position.y + currentObject.h;
+					    var colliderNormal = null;
+
+						if(currentObject.position.y < collider.position.y) {
+							colliderNormal = new Vector2D(0, -1);
+						    var perpendicular = colliderNormal.scale(currentObject.velocity.dotProduct(colliderNormal) / colliderNormal.dotProduct(colliderNormal));
+						    var parallel = currentObject.velocity.subtract(perpendicular);
+						    var newV = parallel.scale(collider.friction).subtract(perpendicular.scale(1));
+						    currentObject.velocity = newV;
+						    currentObject.position.y = collider.position.y - collider.h;
+						} else {
+							// colliderNormal = new Vector2D(0, 1);
+							currentObject.ground = collider;
+							hittingStatic = true;
+							currentObject.position.y = collider.position.y + currentObject.h;
+						}
+
+
 					}
 
 					/// make sure side is opposite for collider:
